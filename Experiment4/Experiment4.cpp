@@ -9,6 +9,9 @@
 
 #define MAX_LOADSTRING 100
 
+const int SEQDEMO_W = 200;
+const int SEQDEMO_H = 200; // 168
+
 // Global Variables:
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
@@ -18,7 +21,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
-void Draw(HWND hWnd);
+void DrawSeqDemo(HWND hWnd);
 //INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 //my stuff
@@ -113,8 +116,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	hInst = hInstance; // Store instance handle in our global variable
-	int w = 200;
-	int h = 168;
+	int w = SEQDEMO_W;// 200;
+	int h = SEQDEMO_H;// 168;
 
 	thePet = std::make_unique <CreaturePet>();
 
@@ -212,7 +215,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_PAINT:
 	{
-		Draw(hWnd);
+		DrawSeqDemo(hWnd);
 	}
 	break;
 	case WM_TIMER:
@@ -226,7 +229,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				globalcounter++;
 			}
 			PostMessage(clickWND, WM_PAINT, wParam, lParam);
-			Draw(hWnd);
+			DrawSeqDemo(hWnd);
 		}
 		break;
 	}
@@ -241,7 +244,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int x = 1;
 		x += 1;
 
-		SetWindowPos(hWnd, NULL, -300, 150, 200, 168, 0);
+		SetWindowPos(hWnd, NULL, -300, 150, SEQDEMO_W, SEQDEMO_H, 0);
 
 		//EnumWindows(enumWindowCallback, lParam);
 		//PostMessage(GetDesktopWindow(), message, wParam, lParam);
@@ -388,7 +391,7 @@ void GetRotatedDC_DUMB(HDC destDC, HDC sourceDC, int w, int h, double degrees)
 }
 
 
-void Draw(HWND hWnd)
+void DrawSeqDemo(HWND hWnd)
 {
 	//thank you Adrian McCarthy at https://stackoverflow.com/questions/18454380/how-to-correct-the-gdi-resource-leakage
 	//for sharing this very useful way to track gdi object leakage and reminding me to release HDCs
@@ -439,7 +442,7 @@ void Draw(HWND hWnd)
 	else
 	{
 		BitBlt(memoryDC, 0, 0, 200, 200, tempDC2, 0 * 189, 0, SRCPAINT);
-		GetRotatedDC_DUMB(memoryDC, memoryDC, 200, 200, globalcounter * 0.314);//0.628
+		GetRotatedDC_DUMB(memoryDC, memoryDC, thePet->frameWidth, thePet->frameHeight, globalcounter * 0.314);//0.628
 		BitBlt(hDC_Main, 0, 0, 200, 200, memoryDC, 0, 0, SRCCOPY);
 	}
 
@@ -471,6 +474,91 @@ void Draw(HWND hWnd)
 	ReleaseDC(hWnd, hDC_Main);
 }
 
+
+
+
+void DrawClock(HWND hWnd)
+{
+	//thank you Adrian McCarthy at https://stackoverflow.com/questions/18454380/how-to-correct-the-gdi-resource-leakage
+	//for sharing this very useful way to track gdi object leakage and reminding me to release HDCs
+	int gdiObjectCount = GetGuiResources(::GetCurrentProcess(), GR_GDIOBJECTS);
+
+	PAINTSTRUCT ps;
+	HDC hdc = BeginPaint(hWnd, &ps);
+	// TODO: Add any drawing code that uses hdc here...
+	HDC hDC_Main = GetDC(hWnd);
+	HDC memoryDC = CreateCompatibleDC(hDC_Main);
+	HDC tempDC = CreateCompatibleDC(memoryDC);
+	HDC tempDC2 = CreateCompatibleDC(memoryDC);
+	HDC tempDC3 = CreateCompatibleDC(memoryDC);
+
+
+	HBITMAP memoryBMP = (HBITMAP)CreateCompatibleBitmap(hDC_Main, 200, 200);
+	HBITMAP selectedBMP = (HBITMAP)SelectObject(memoryDC, memoryBMP);
+
+
+	HBITMAP temp2BMP = (HBITMAP)CreateCompatibleBitmap(hDC_Main, 200, 200);
+	HBITMAP oldtemp2BMP = (HBITMAP)SelectObject(tempDC2, temp2BMP);
+
+
+	HBITMAP temp3BMP = (HBITMAP)CreateCompatibleBitmap(hDC_Main, 200, 200);
+	HBITMAP oldtemp3BMP = (HBITMAP)SelectObject(tempDC3, temp3BMP);
+
+	RECT rect = { 0, 0, 200, 200 };
+	HBRUSH limeBrush = CreateSolidBrush(RGB(124, 254, 124));
+	FillRect(tempDC2, &rect, limeBrush);
+	FillRect(memoryDC, &rect, limeBrush);//WHITE_BRUSH
+
+
+	HBITMAP oldtempBMP = (HBITMAP)SelectObject(tempDC, thePet->imageMask);
+	BitBlt(tempDC2, 0, 0, thePet->frameWidth, thePet->frameHeight, tempDC, thePet->frameStartX, thePet->frameStartY, SRCCOPY);
+	BitBlt(tempDC3, 0, 0, thePet->frameWidth, thePet->frameHeight, tempDC, thePet->frameStartX, thePet->frameStartY, NOTSRCCOPY);
+	BitBlt(memoryDC, 0, 0, thePet->frameWidth, thePet->frameHeight, tempDC3, 0, 0, SRCAND);
+	//DeleteObject(oldtempBMP);
+
+	//DO NOT delete the imageMask!
+	(HBITMAP)SelectObject(tempDC, thePet->imageBase);
+	BitBlt(tempDC2, 0, 0, thePet->frameWidth, thePet->frameHeight, tempDC, thePet->frameStartX, thePet->frameStartY, SRCAND);
+
+	if (testcheck == 0) {
+		BitBlt(memoryDC, 0, 0, 200, 200, tempDC2, 0 * 189, 0, SRCPAINT);
+		BitBlt(hDC_Main, 0, 0, 200, 200, memoryDC, 0, 0, SRCCOPY);
+		testcheck += 1;
+	}
+	else
+	{
+		BitBlt(memoryDC, 0, 0, 200, 200, tempDC2, 0 * 189, 0, SRCPAINT);
+		GetRotatedDC_DUMB(memoryDC, memoryDC, thePet->frameWidth, thePet->frameHeight, globalcounter * 0.314);//0.628
+		BitBlt(hDC_Main, 0, 0, 200, 200, memoryDC, 0, 0, SRCCOPY);
+	}
+
+	DeleteObject(limeBrush);
+	DeleteObject(temp3BMP);
+	DeleteObject(temp2BMP);
+	DeleteObject(memoryBMP);
+
+	//DO NOT delete the imageMask!
+
+	(HBITMAP)SelectObject(tempDC3, oldtemp3BMP);
+	DeleteObject(oldtemp3BMP);
+	DeleteObject(tempDC3);
+
+	(HBITMAP)SelectObject(tempDC2, oldtemp2BMP);
+	DeleteObject(oldtemp2BMP);
+	DeleteObject(tempDC2);
+
+	(HBITMAP)SelectObject(tempDC, oldtempBMP);
+	DeleteObject(oldtempBMP);
+	DeleteObject(tempDC);
+
+	(HBITMAP)SelectObject(memoryDC, selectedBMP);
+	DeleteObject(selectedBMP);
+	DeleteObject(memoryDC);
+
+	EndPaint(hWnd, &ps);
+	ReleaseDC(hWnd, hdc);
+	ReleaseDC(hWnd, hDC_Main);
+}
 
 
 
