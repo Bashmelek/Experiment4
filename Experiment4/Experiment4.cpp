@@ -25,12 +25,14 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 void DrawSeqDemo(HWND hWnd);
+void DrawClock(HWND hWnd);
 //INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 //my stuff
 HBITMAP imageBase;
 HBITMAP imageMask;
 std::unique_ptr <CreaturePet> thePet;
+std::unique_ptr <GenerPet> _thePet;
 HWND trueMainWND;
 HWND clickWND;
 
@@ -123,6 +125,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	int h = SEQDEMO_H;// 168;
 
 	thePet = std::make_unique <CreaturePet>();
+
+	_thePet = std::make_unique<DesktopClock>();
+	(*_thePet).InitPet();
 
 	//HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_EX_LAYERED | WS_EX_APPWINDOW | WS_EX_TOPMOST | WS_EX_TRANSPARENT,//WS_OVERLAPPEDWINDOW,
 	//   CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
@@ -218,7 +223,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_PAINT:
 	{
-		DrawSeqDemo(hWnd);
+		//DrawSeqDemo(hWnd);
+		DrawClock(hWnd);
 	}
 	break;
 	case WM_TIMER:
@@ -232,7 +238,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				globalcounter++;
 			}
 			PostMessage(clickWND, WM_PAINT, wParam, lParam);
-			DrawSeqDemo(hWnd);
+			//DrawSeqDemo(hWnd);
+			DrawClock(hWnd);
 		}
 		break;
 	}
@@ -368,9 +375,10 @@ void DrawClock(HWND hWnd)
 	HBITMAP memoryBMP = (HBITMAP)CreateCompatibleBitmap(hDC_Main, 200, 200);
 	HBITMAP oldBMP = (HBITMAP)SelectObject(memoryDC, memoryBMP);
 	 
+	(*_thePet).ApplyPetRender(memoryDC, memoryDC);
+	//
 
-
-
+	BitBlt(hDC_Main, 0, 0, 200, 200, memoryDC, 0, 0, SRCCOPY);
 
 	DeleteObject(memoryBMP);
 

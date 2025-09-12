@@ -9,10 +9,12 @@
 
 int DesktopClock::InitPet()
 {
+	TCHAR pwd[MAX_PATH];
+	GetCurrentDirectory(MAX_PATH, pwd);
 
 	clockmain = (HBITMAP)LoadImage(
 		NULL,
-		L"clockface.bmp",////\\ClockResources
+		L"ClockResources\\clockface.bmp",////\\ClockResources
 		IMAGE_BITMAP,
 		0,
 		0,
@@ -20,17 +22,16 @@ int DesktopClock::InitPet()
 	);
 	clockmask = (HBITMAP)LoadImage(
 		NULL,
-		L"clockface_mask.bmp",////\\ClockResources
+		L"ClockResources\\clockface_mask.bmp",////\\ClockResources
 		IMAGE_BITMAP,
 		0,
 		0,
 		LR_LOADFROMFILE
 	);
 
-
 	hourhand = (HBITMAP)LoadImage(
 		NULL,
-		L"clocklittlehand.bmp",////\\ClockResources
+		L"ClockResources\\clocklittlehand.bmp",////\\ClockResources
 		IMAGE_BITMAP,
 		0,
 		0,
@@ -38,7 +39,7 @@ int DesktopClock::InitPet()
 	);
 	hourhandmask = (HBITMAP)LoadImage(
 		NULL,
-		L"clocklittlehand_mask.bmp",////\\GameResources
+		L"ClockResources\\clocklittlehand_mask.bmp",////\\GameResources
 		IMAGE_BITMAP,
 		0,
 		0,
@@ -48,7 +49,7 @@ int DesktopClock::InitPet()
 
 	minutehand = (HBITMAP)LoadImage(
 		NULL,
-		L"clockbighand.bmp",////\\GameResources
+		L"ClockResources\\clockbighand.bmp",////\\GameResources
 		IMAGE_BITMAP,
 		0,
 		0,
@@ -56,7 +57,7 @@ int DesktopClock::InitPet()
 	);
 	minutehandmask = (HBITMAP)LoadImage(
 		NULL,
-		L"clockbighand_mask.bmp",////\\GameResources
+		L"ClockResources\\clockbighand_mask.bmp",////\\GameResources
 		IMAGE_BITMAP,
 		0,
 		0,
@@ -66,7 +67,7 @@ int DesktopClock::InitPet()
 
 	secondhand = (HBITMAP)LoadImage(
 		NULL,
-		L"clocksecondhand.bmp",////\\GameResources
+		L"ClockResources\\clocksecondhand.bmp",////\\GameResources
 		IMAGE_BITMAP,
 		0,
 		0,
@@ -74,7 +75,7 @@ int DesktopClock::InitPet()
 	);
 	secondhandmask = (HBITMAP)LoadImage(
 		NULL,
-		L"clocksecondhand_mask.bmp",////\\GameResources
+		L"ClockResources\\clocksecondhand_mask.bmp",////\\GameResources
 		IMAGE_BITMAP,
 		0,
 		0,
@@ -87,7 +88,28 @@ int DesktopClock::InitPet()
 
 int DesktopClock::ApplyPetRender(HDC targetDC, HDC sourceDC)
 {
+	HDC tempDC = CreateCompatibleDC(sourceDC);
+	HBITMAP tempBMP = (HBITMAP)CreateCompatibleBitmap(tempDC, 180, 180);
+	HBITMAP oldtempBMP = (HBITMAP)SelectObject(tempDC, tempBMP);
 
+	HDC memDC = CreateCompatibleDC(sourceDC);
+
+
+	HBITMAP oldmemBMP = (HBITMAP)SelectObject(memDC, clockmask);
+	BitBlt(targetDC, 0, 0, 180, 180, memDC, 0, 0, SRCCOPY);
+
+	(HBITMAP)SelectObject(memDC, clockmain);
+	BitBlt(targetDC, 0, 0, 180, 180, memDC, 0, 0, SRCAND);
+
+
+	(HBITMAP)SelectObject(memDC, oldmemBMP);
+	DeleteObject(oldmemBMP);
+	DeleteObject(memDC);
+
+	DeleteObject(tempBMP);
+	(HBITMAP)SelectObject(tempDC, oldtempBMP);
+	DeleteObject(oldtempBMP);
+	DeleteObject(tempDC);
 
 	return 0;
 }
