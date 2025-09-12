@@ -30,12 +30,30 @@
     <ClInclude Include="CreaturePet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GenerPet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="General\GenUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClockResources\DesktopClock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Experiment4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CreaturePet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GenerPet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="General\GenUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClockResources\DesktopClock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

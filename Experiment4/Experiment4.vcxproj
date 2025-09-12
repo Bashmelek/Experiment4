@@ -151,15 +151,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ClockResources\DesktopClock.h" />
     <ClInclude Include="CreaturePet.h" />
     <ClInclude Include="Experiment4.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="General\GenUtil.h" />
+    <ClInclude Include="GenerPet.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ClockResources\DesktopClock.cpp" />
     <ClCompile Include="CreaturePet.cpp" />
     <ClCompile Include="Experiment4.cpp" />
+    <ClCompile Include="General\GenUtil.cpp" />
+    <ClCompile Include="GenerPet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Experiment4.rc" />
