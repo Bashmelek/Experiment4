@@ -107,14 +107,14 @@ void GenUtil::GetRotatedDC_DUMB(HDC destDC, HDC sourceDC, int w, int h, double d
 			//COLORREF colour2 = GetPixel(tempDC, i, j);
 			if (isourcex > 0 && isourcex < w && isourcey > 0 && isourcey < h)
 			{
-				if (degrees < 1260 || true)
-				{
+				/*if (degrees < 1260 || true)
+				{*/
 					buffer[iw + j] = sbuffer[isourcex * w + isourcey]; //i * w + j];// (int)(sourcex * w) + (int)sourcey];// colour;//0xFFFF00FF; //colour;// FF00FF;
-				}
+				/*}
 				else
 				{
 					buffer[iw + j] = sbuffer[iw + j];
-				}
+				}*/
 			}
 			else 
 			{
