@@ -3,10 +3,10 @@
 
 
 
-#ifndef CREATUREPETDEF
-#define CREATUREPETDEF
+#ifndef CREATUREPROTODEF
+#define CREATUREPROTODEF
 
-class CreaturePet
+class CreatureProto
 {
 	public:
 		HBITMAP imageBase;
@@ -18,10 +18,10 @@ class CreaturePet
 		int frameWidth;
 		int frameHeight;
 
-		CreaturePet();
+		CreatureProto();
 		int AdvanceFrame();
 };
 
 
 
-#endif CREATUREPETDEF
+#endif CREATUREPROTODEF

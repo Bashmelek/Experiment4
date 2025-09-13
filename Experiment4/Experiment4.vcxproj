@@ -152,7 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ClockResources\DesktopClock.h" />
-    <ClInclude Include="CreaturePet.h" />
+    <ClInclude Include="CreatureProto.h" />
     <ClInclude Include="Experiment4.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="General\GenUtil.h" />
@@ -162,7 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClockResources\DesktopClock.cpp" />
-    <ClCompile Include="CreaturePet.cpp" />
+    <ClCompile Include="CreatureProto.cpp" />
     <ClCompile Include="Experiment4.cpp" />
     <ClCompile Include="General\GenUtil.cpp" />
     <ClCompile Include="GenerPet.cpp" />

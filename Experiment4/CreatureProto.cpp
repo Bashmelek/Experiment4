@@ -1,10 +1,10 @@
 
 
 #include "framework.h"
-#include "CreaturePet.h"
+#include "CreatureProto.h"
 
 
-CreaturePet::CreaturePet()
+CreatureProto::CreatureProto()
 {
 	currentFrame = 0;
 	frameCount = 9;
@@ -31,7 +31,7 @@ CreaturePet::CreaturePet()
 }
 
 
-int CreaturePet::AdvanceFrame()
+int CreatureProto::AdvanceFrame()
 {
 	currentFrame = (currentFrame + 1) % frameCount;
 	frameStartX = currentFrame * 189;

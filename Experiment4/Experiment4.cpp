@@ -34,7 +34,7 @@ void DrawClock(HWND hWnd);
 //my stuff
 HBITMAP imageBase;
 HBITMAP imageMask;
-std::unique_ptr <CreaturePet> thePet;
+std::unique_ptr <CreatureProto> thePet;
 std::unique_ptr <GenerPet> _thePet;
 HWND trueMainWND;
 HWND clickWND;
@@ -127,7 +127,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	int w = SEQDEMO_W;// 200;
 	int h = SEQDEMO_H;// 168;
 
-	thePet = std::make_unique <CreaturePet>();
+	thePet = std::make_unique <CreatureProto>();
 
 	_thePet = std::make_unique<DesktopClock>();
 	(*_thePet).InitPet();
