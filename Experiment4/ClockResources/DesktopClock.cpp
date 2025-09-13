@@ -18,7 +18,7 @@ int DesktopClock::InitPet()
 
 	clockmain = (HBITMAP)LoadImage(
 		NULL,
-		L"ClockResources\\clockface.bmp",////\\ClockResources
+		L"ClockResources\\clockfacehard.bmp",////\\ClockResources
 		IMAGE_BITMAP,
 		0,
 		0,
@@ -26,7 +26,7 @@ int DesktopClock::InitPet()
 	);
 	clockmask = (HBITMAP)LoadImage(
 		NULL,
-		L"ClockResources\\clockface_mask.bmp",////\\ClockResources
+		L"ClockResources\\clockfacehard_mask.bmp",////\\ClockResources
 		IMAGE_BITMAP,
 		0,
 		0,
@@ -107,9 +107,9 @@ int DesktopClock::ApplyPetRender(HDC targetDC, HDC sourceDC)
 
 	const double pi = 3.14159265358979323846;
 
-	HDC tempDC = CreateCompatibleDC(sourceDC);
+	/*HDC tempDC = CreateCompatibleDC(sourceDC);
 	HBITMAP tempBMP = (HBITMAP)CreateCompatibleBitmap(tempDC, 180, 180);
-	HBITMAP oldtempBMP = (HBITMAP)SelectObject(tempDC, tempBMP);
+	HBITMAP oldtempBMP = (HBITMAP)SelectObject(tempDC, tempBMP);*/
 
 	HDC rotDC = CreateCompatibleDC(sourceDC);
 	//thankyou Adrian Mole https://stackoverflow.com/questions/71479933/why-createcompatiblebitmap-isnt-compatible-with-createcompatibledc
@@ -117,10 +117,10 @@ int DesktopClock::ApplyPetRender(HDC targetDC, HDC sourceDC)
 	HBITMAP rotBMP = (HBITMAP)CreateCompatibleBitmap(sourceDC, 180, 180);
 	HBITMAP oldrotBMP = (HBITMAP)SelectObject(rotDC, rotBMP);
 
-	HDC rfullDC = CreateCompatibleDC(sourceDC);
-	//bitmap must be compatible with source for reasons unknown
-	HBITMAP rfullBMP = (HBITMAP)CreateCompatibleBitmap(sourceDC, 180, 180);
-	HBITMAP oldrfullBMP = (HBITMAP)SelectObject(rfullDC, rfullBMP);
+	//HDC rfullDC = CreateCompatibleDC(sourceDC);
+	////bitmap must be compatible with source for reasons unknown
+	//HBITMAP rfullBMP = (HBITMAP)CreateCompatibleBitmap(sourceDC, 180, 180);
+	//HBITMAP oldrfullBMP = (HBITMAP)SelectObject(rfullDC, rfullBMP);
 
 
 	HDC memDC = CreateCompatibleDC(sourceDC);
@@ -179,20 +179,20 @@ int DesktopClock::ApplyPetRender(HDC targetDC, HDC sourceDC)
 	DeleteObject(oldmemBMP);
 	DeleteObject(memDC);
 
-	DeleteObject(rfullBMP);
-	(HBITMAP)SelectObject(rfullDC, oldrfullBMP);
-	DeleteObject(oldrfullBMP);
-	DeleteObject(rfullDC);
+	//DeleteObject(rfullBMP);
+	//(HBITMAP)SelectObject(rfullDC, oldrfullBMP);
+	//DeleteObject(oldrfullBMP);
+	//DeleteObject(rfullDC);
 
 	DeleteObject(rotBMP);
 	(HBITMAP)SelectObject(rotDC, oldrotBMP);
 	DeleteObject(oldrotBMP);
 	DeleteObject(rotDC);
 
-	DeleteObject(tempBMP);
-	(HBITMAP)SelectObject(tempDC, oldtempBMP);
-	DeleteObject(oldtempBMP);
-	DeleteObject(tempDC);
+	//DeleteObject(tempBMP);
+	//(HBITMAP)SelectObject(tempDC, oldtempBMP);
+	//DeleteObject(oldtempBMP);
+	//DeleteObject(tempDC);
 
 	return 0;
 }

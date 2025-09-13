@@ -8,6 +8,9 @@
 #include "ClockResources\DesktopClock.h"
 #include <memory>
 
+#include <chrono>
+#include <ctime>
+
 #define MAX_LOADSTRING 100
 
 #define MAX_LOADSTRING 100
@@ -224,7 +227,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 	{
 		//DrawSeqDemo(hWnd);
-		DrawClock(hWnd);
+		DrawClock(hWnd);//DrawClock  DrawSeqDemo
 	}
 	break;
 	case WM_TIMER:
@@ -365,31 +368,41 @@ void DrawClock(HWND hWnd)
 	//for sharing this very useful way to track gdi object leakage and reminding me to release HDCs
 	int gdiObjectCount = GetGuiResources(::GetCurrentProcess(), GR_GDIOBJECTS);
 
+	auto start = std::chrono::system_clock::now();
+
 	PAINTSTRUCT ps;
 	HDC hdc = BeginPaint(hWnd, &ps);
 	// TODO: Add any drawing code that uses hdc here...
 	HDC hDC_Main = GetDC(hWnd);
+
 	HDC memoryDC = CreateCompatibleDC(hDC_Main); 
-
-
 	HBITMAP memoryBMP = (HBITMAP)CreateCompatibleBitmap(hDC_Main, 180, 180);
 	HBITMAP oldBMP = (HBITMAP)SelectObject(memoryDC, memoryBMP);
 
+	HDC stagingDC = CreateCompatibleDC(hDC_Main);
+	HBITMAP stagingBMP = (HBITMAP)CreateCompatibleBitmap(hDC_Main, 200, 200);
+	HBITMAP oldstagingBMP = (HBITMAP)SelectObject(stagingDC, stagingBMP);
 
 	RECT rect = { 0, 0, 200, 200 };
 	HBRUSH limeBrush = CreateSolidBrush(RGB(124, 254, 124));
 	FillRect(memoryDC, &rect, limeBrush);
-	FillRect(hDC_Main, &rect, limeBrush);
 	 
 	(*_thePet).ApplyPetRender(memoryDC, memoryDC);
 	//
 
-	BitBlt(hDC_Main, 0, 0, 180, 180, memoryDC, 0, 0, SRCCOPY);
+	FillRect(stagingDC, &rect, limeBrush);
+	BitBlt(stagingDC, 0, 0, 180, 180, memoryDC, 0, 0, SRCCOPY);
+	BitBlt(hDC_Main, 0, 0, 200, 200, stagingDC, 0, 0, SRCCOPY);
 
+	DeleteObject(stagingBMP);
 	DeleteObject(memoryBMP);
 
 
 	DeleteObject(limeBrush);
+
+	(HBITMAP)SelectObject(stagingDC, oldstagingBMP);
+	DeleteObject(oldstagingBMP);
+	DeleteObject(stagingDC);
 
 	(HBITMAP)SelectObject(memoryDC, oldBMP);
 	DeleteObject(oldBMP);
@@ -398,6 +411,12 @@ void DrawClock(HWND hWnd)
 	EndPaint(hWnd, &ps);
 	ReleaseDC(hWnd, hdc);
 	ReleaseDC(hWnd, hDC_Main);
+
+	// Some computation here
+	auto end = std::chrono::system_clock::now();
+
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
 }
 
 
