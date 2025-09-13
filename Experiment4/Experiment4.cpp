@@ -372,15 +372,24 @@ void DrawClock(HWND hWnd)
 	HDC memoryDC = CreateCompatibleDC(hDC_Main); 
 
 
-	HBITMAP memoryBMP = (HBITMAP)CreateCompatibleBitmap(hDC_Main, 200, 200);
+	HBITMAP memoryBMP = (HBITMAP)CreateCompatibleBitmap(hDC_Main, 180, 180);
 	HBITMAP oldBMP = (HBITMAP)SelectObject(memoryDC, memoryBMP);
+
+
+	RECT rect = { 0, 0, 200, 200 };
+	HBRUSH limeBrush = CreateSolidBrush(RGB(124, 254, 124));
+	FillRect(memoryDC, &rect, limeBrush);
+	FillRect(hDC_Main, &rect, limeBrush);
 	 
 	(*_thePet).ApplyPetRender(memoryDC, memoryDC);
 	//
 
-	BitBlt(hDC_Main, 0, 0, 200, 200, memoryDC, 0, 0, SRCCOPY);
+	BitBlt(hDC_Main, 0, 0, 180, 180, memoryDC, 0, 0, SRCCOPY);
 
 	DeleteObject(memoryBMP);
+
+
+	DeleteObject(limeBrush);
 
 	(HBITMAP)SelectObject(memoryDC, oldBMP);
 	DeleteObject(oldBMP);

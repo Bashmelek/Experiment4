@@ -5,10 +5,8 @@
 #include <memory>
 
 
-
 void GenUtil::GetRotatedDC_DUMB(HDC destDC, HDC sourceDC, int w, int h, double degrees)
 {
-
 	HDC tempDC = CreateCompatibleDC(sourceDC);
 	//HBITMAP oldtempBMP = (HBITMAP)SelectObject(tempDC, thePet->imageMask);
 
@@ -105,7 +103,7 @@ void GenUtil::GetRotatedDC_DUMB(HDC destDC, HDC sourceDC, int w, int h, double d
 			//COLORREF colour2 = GetPixel(tempDC, i, j);
 			if (sourcex > 0 && sourcex < w && sourcey > 0 && sourcey < h)
 			{
-				if (degrees < 1260)
+				if (degrees < 1260 || true)
 				{
 					buffer[i * w + j] = sbuffer[isourcex * w + isourcey]; //i * w + j];// (int)(sourcex * w) + (int)sourcey];// colour;//0xFFFF00FF; //colour;// FF00FF;
 				}
@@ -113,6 +111,11 @@ void GenUtil::GetRotatedDC_DUMB(HDC destDC, HDC sourceDC, int w, int h, double d
 				{
 					buffer[i * w + j] = sbuffer[i * w + j];
 				}
+			}
+			else 
+			{
+				//124, 254, 124
+				buffer[i * w + j] = 0x007CFE7C;
 			}
 			//buffer[i * j * 2] = 0xFF;
 			//buffer[i * j * 3] = 0xFF;
