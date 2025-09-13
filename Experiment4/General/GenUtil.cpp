@@ -80,42 +80,48 @@ void GenUtil::GetRotatedDC_DUMB(HDC destDC, HDC sourceDC, int w, int h, double d
 	double cosval = cos(degrees);
 	double sinval = sin(degrees);
 
+	double hw = (w / 2.0);
+	double hh = (h / 2.0);
+
 	//COLORREF colour = GetPixel(sourceDC, 1, 1);
 	for (int i = 0; i < w; i++)
 	{
-		double hw = (w / 2.0);
 		double x = (i - hw);
+		int iw = i * w;
 
+		//todo george: make faster by setting acceptable range beforehand, based on angle
 		for (int j = 0; j < h; j++)
 		{
-			double y = (j - (h / 2.0));
+			double y = (j - hh);
 			//double radius = sqrt(x * x + y * y);
 
-			double sourcex = (cosval * x + sinval * y) + hw;// cos(degrees) * x + (w / 2.0);// i;// cos(degrees) * (i - (w / 2.0)) + (w / 2.0);
-			double sourcey = (-sinval * x + cosval * y) + (h / 2.0);// sin(degrees) * y + (h / 2.0);// j;// sin(degrees) * (j - (h / 2.0)) + (h / 2.0);
+			int isourcex = (cosval * x + sinval * y) + hw;// cos(degrees) * x + (w / 2.0);// i;// cos(degrees) * (i - (w / 2.0)) + (w / 2.0);
+			int isourcey = (-sinval * x + cosval * y) + hh;// sin(degrees) * y + (h / 2.0);// j;// sin(degrees) * (j - (h / 2.0)) + (h / 2.0);
 
-			int isourcex = (int)sourcex;
-			int isourcey = (int)sourcey;
+			////int isourcex = (int)sourcex;
+			////int isourcey = (int)sourcey;
 			//COLORREF colour = GetPixel(sourceDC, sourcex, sourcey);// (COLORREF)buffer[i * j];// GetPixel(sourceDC, sourcex, sourcey);
 			//COLORREF colour =  GetPixel(sourceDC, i, j);
 
 			//SetPixel(tempDC, i, j, colour);
 			//COLORREF colour2 = GetPixel(tempDC, i, j);
-			if (sourcex > 0 && sourcex < w && sourcey > 0 && sourcey < h)
+			if (isourcex > 0 && isourcex < w && isourcey > 0 && isourcey < h)
 			{
 				if (degrees < 1260 || true)
 				{
-					buffer[i * w + j] = sbuffer[isourcex * w + isourcey]; //i * w + j];// (int)(sourcex * w) + (int)sourcey];// colour;//0xFFFF00FF; //colour;// FF00FF;
+					buffer[iw + j] = sbuffer[isourcex * w + isourcey]; //i * w + j];// (int)(sourcex * w) + (int)sourcey];// colour;//0xFFFF00FF; //colour;// FF00FF;
 				}
 				else
 				{
-					buffer[i * w + j] = sbuffer[i * w + j];
+					buffer[iw + j] = sbuffer[iw + j];
 				}
 			}
 			else 
 			{
+				//neutral color should change depending on context...and ought to be prefilled then ignored probably
+				//this whole else seems unnecessary
 				//124, 254, 124
-				buffer[i * w + j] = 0x007CFE7C;
+				buffer[iw + j] = 0x007CFE7C;
 			}
 			//buffer[i * j * 2] = 0xFF;
 			//buffer[i * j * 3] = 0xFF;
